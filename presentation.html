@@ -195,52 +195,6 @@
 </section>
 
 <!-- ============================================================ -->
-<!-- IMPORTANT: THIS IS NOT SCRIPTED -->
-<!-- ============================================================ -->
-<section>
-  <h2>Before We Start</h2>
-  <p style="font-size:0.7em; color:var(--term-yellow); margin-bottom:0.6em;">This is not a canned demo.</p>
-
-  <div style="font-size:0.6em; text-align:left; max-width:700px; margin:0 auto; line-height:2.2;">
-    <p><span class="green">Scripted:</span> &nbsp;The user's messages (typed in sequence by a demo runner)</p>
-    <p><span class="green">Scripted:</span> &nbsp;The API conditions (we trigger rate limits + downtime at key moments)</p>
-    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The agent's responses</p>
-    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;Which tools the agent calls</p>
-    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The decision to create a local database</p>
-    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The SQL queries it writes</p>
-    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The write-through strategy</p>
-  </div>
-
-  <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">Every agent action you're about to see is a real GPT-5.2 function-calling decision.</p>
-</section>
-
-<!-- ============================================================ -->
-<!-- HOW IT WORKS -->
-<!-- ============================================================ -->
-<section>
-  <h2>How We Nudge, Not Script</h2>
-
-  <div style="font-size:0.55em; text-align:left; max-width:750px; margin:0.5em auto; line-height:1.8;">
-    <p style="margin-bottom:0.6em;"><span class="cyan">1. Tool availability</span></p>
-    <p class="dim" style="margin-left:1.5em; margin-bottom:0.8em;">
-      The agent has <code style="color:var(--term-yellow);">create_local_db</code> and <code style="color:var(--term-yellow);">local_db_query</code> in its toolbox.<br>
-      LLMs are biased toward using tools that exist. Just having them is a signal.
-    </p>
-    <p style="margin-bottom:0.6em;"><span class="cyan">2. Gentle system prompt</span></p>
-    <div class="architecture-box" style="font-size:0.85em; max-width:650px; margin:0.3em auto 0.8em 1.5em; padding:10px 14px;">
-      "If you encounter slowness or rate limits, <span style="color:var(--term-yellow);">consider</span> caching locally."
-    </div>
-    <p style="margin-bottom:0.6em;"><span class="cyan">3. Environmental pressure</span></p>
-    <p class="dim" style="margin-left:1.5em;">
-      We make the API painful: <span class="red">2s latency</span> on every call, then <span class="red">429 rate limits</span>.<br>
-      The agent connects the dots on its own.
-    </p>
-  </div>
-
-  <p class="highlight" style="font-size:0.55em; margin-top:0.5em;">We set the conditions. The agent makes the decision.</p>
-</section>
-
-<!-- ============================================================ -->
 <!-- ACT 1: MEET THE CRM -->
 <!-- ============================================================ -->
 <section>
@@ -534,6 +488,53 @@
     This isn't just about CRM. Think about any enterprise system<br>
     with slow APIs, rate limits, and downtime.
   </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- IMPORTANT: THIS IS NOT SCRIPTED -->
+<!-- ============================================================ -->
+<section>
+  <h2>Quick note: what’s scripted vs. emergent</h2>
+  <p style="font-size:0.7em; color:var(--term-yellow); margin-bottom:0.6em;">We script the <em>story beats</em> — not the agent.</p>
+
+  <div style="font-size:0.6em; text-align:left; max-width:780px; margin:0 auto; line-height:2.2;">
+    <p><span class="green">Scripted (for illustration):</span> &nbsp;The demo phases / prompts (the “Act 1–5” sequence)</p>
+    <p><span class="green">Scripted (for realism):</span> &nbsp;API conditions (latency, 429 rate limits, downtime triggers)</p>
+
+    <p class="fragment" style="margin-top:0.4em;"><span class="yellow">Not scripted (emergent):</span> &nbsp;The agent’s responses</p>
+    <p class="fragment"><span class="yellow">Not scripted (emergent):</span> &nbsp;Which tools it calls and in what order</p>
+    <p class="fragment"><span class="yellow">Not scripted (emergent):</span> &nbsp;Creating a local database + deciding what to cache</p>
+    <p class="fragment"><span class="yellow">Not scripted (emergent):</span> &nbsp;The SQL it writes</p>
+    <p class="fragment"><span class="yellow">Not scripted (emergent):</span> &nbsp;The sync / write-through strategy</p>
+  </div>
+
+  <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">In short: the <span style="color:var(--term-yellow);">scenario</span> is guided, but the <span style="color:var(--term-yellow);">architecture decisions</span> are live agent behavior.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- HOW IT WORKS -->
+<!-- ============================================================ -->
+<section>
+  <h2>How We Nudge, Not Script</h2>
+
+  <div style="font-size:0.55em; text-align:left; max-width:750px; margin:0.5em auto; line-height:1.8;">
+    <p style="margin-bottom:0.6em;"><span class="cyan">1. Tool availability</span></p>
+    <p class="dim" style="margin-left:1.5em; margin-bottom:0.8em;">
+      The agent has <code style="color:var(--term-yellow);">create_local_db</code> and <code style="color:var(--term-yellow);">local_db_query</code> in its toolbox.<br>
+      LLMs are biased toward using tools that exist. Just having them is a signal.
+    </p>
+    <p style="margin-bottom:0.6em;"><span class="cyan">2. Gentle system prompt</span></p>
+    <div class="architecture-box" style="font-size:0.85em; max-width:650px; margin:0.3em auto 0.8em 1.5em; padding:10px 14px;">
+      "If you encounter slowness or rate limits, <span style="color:var(--term-yellow);">consider</span> caching locally."
+    </div>
+    <p style="margin-bottom:0.6em;"><span class="cyan">3. Environmental pressure</span></p>
+    <p class="dim" style="margin-left:1.5em;">
+      We make the API painful: <span class="red">2s latency</span> on every call, then <span class="red">429 rate limits</span>.<br>
+      The agent connects the dots on its own.
+    </p>
+  </div>
+
+  <p class="highlight" style="font-size:0.55em; margin-top:0.5em;">We set the conditions. The agent makes the decision.</p>
 </section>
 
 <!-- ============================================================ -->
