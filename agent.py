@@ -18,7 +18,7 @@ from rich.markdown import Markdown
 # --- Config ---
 CRM_BASE_URL = os.environ.get("CRM_BASE_URL", "http://localhost:5555")
 SHADOW_DB_PATH = os.environ.get("SHADOW_DB_PATH", "shadow.db")
-MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o")
+MODEL = os.environ.get("OPENAI_MODEL", "gpt-5.2")
 
 console = Console()
 client = OpenAI()

@@ -188,7 +188,7 @@
 <section>
   <h2>The Setup</h2>
   <div class="architecture-box">
-    <span style="color:var(--term-green);">User</span>  &rarr;  <span style="color:var(--term-blue);">Chat Agent</span> <span class="dim">(GPT-4o + function calling)</span>  &rarr;  <span style="color:var(--term-yellow);">Salesforce API</span><br>
+    <span style="color:var(--term-green);">User</span>  &rarr;  <span style="color:var(--term-blue);">Chat Agent</span> <span class="dim">(GPT-5.2 + function calling)</span>  &rarr;  <span style="color:var(--term-yellow);">Salesforce API</span><br>
     <br>
     <span class="dim">The agent has 8 tools:</span><br>
     &nbsp;&nbsp;<span style="color:var(--term-cyan);">4 CRM tools</span> &mdash; list/create contacts &amp; deals via API<br>
@@ -198,7 +198,7 @@
   <p class="dim" style="font-size:0.55em;">The agent decides when and how to use each tool. No scripted logic.</p>
 
   <aside class="notes">
-    Our setup is simple: a chat agent powered by GPT-4o that talks to a mock Salesforce API. The agent has two sets of tools — CRM API tools and local database tools. The key insight: we give it the tools and a system prompt, but the agent decides when to use each one. There's no hard-coded logic telling it to create a database. It figures that out on its own.
+    Our setup is simple: a chat agent powered by GPT-5.2 that talks to a mock Salesforce API. The agent has two sets of tools — CRM API tools and local database tools. The key insight: we give it the tools and a system prompt, but the agent decides when to use each one. There's no hard-coded logic telling it to create a database. It figures that out on its own.
   </aside>
 </section>
 
@@ -219,10 +219,10 @@
     <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The write-through strategy</p>
   </div>
 
-  <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">Every agent action you're about to see is a real GPT-4o function-calling decision.</p>
+  <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">Every agent action you're about to see is a real GPT-5.2 function-calling decision.</p>
 
   <aside class="notes">
-    Before we dive in, I want to be clear about what's real and what's staged. We script the user's questions — they're fed in automatically so the demo is reproducible. And we control the API conditions — we deliberately trigger rate limits and downtime at key moments. But everything the agent does is real. The responses, the tool choices, the decision to create a database, the SQL it writes — all of that is live GPT-4o inference. Nothing is hard-coded.
+    Before we dive in, I want to be clear about what's real and what's staged. We script the user's questions — they're fed in automatically so the demo is reproducible. And we control the API conditions — we deliberately trigger rate limits and downtime at key moments. But everything the agent does is real. The responses, the tool choices, the decision to create a database, the SQL it writes — all of that is live GPT-5.2 inference. Nothing is hard-coded.
   </aside>
 </section>
 
@@ -596,7 +596,7 @@
   <br>
   <div class="architecture-box" style="font-size:0.44em; max-width:700px;">
     <span style="color:var(--term-yellow);">mock_crm_server.py</span> &mdash; Flask API, SQLite, artificial delays, rate limiting<br>
-    <span style="color:var(--term-blue);">agent.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; OpenAI GPT-4o, 8 function-calling tools, Rich UI<br>
+    <span style="color:var(--term-blue);">agent.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; OpenAI GPT-5.2, 8 function-calling tools, Rich UI<br>
     <span style="color:var(--term-green);">demo.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; Scripted 5-act demo runner<br>
     <span style="color:var(--term-dim);">seed_data.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; 47 contacts, 23 deals, 15 companies<br>
     <br>
