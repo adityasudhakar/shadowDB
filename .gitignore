@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+*.db
+shadow.db
+crm_data.db
+.env

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadow DB: How AI Agents Replace Your CRM</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+<style>
+  :root {
+    --term-bg: #1a1b26;
+    --term-border: #414868;
+    --term-green: #9ece6a;
+    --term-red: #f7768e;
+    --term-yellow: #e0af68;
+    --term-cyan: #7dcfff;
+    --term-blue: #7aa2f7;
+    --term-dim: #565f89;
+    --term-text: #c0caf5;
+    --term-white: #ffffff;
+  }
+
+  .reveal { font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif; }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif; font-weight: 700; }
+  .reveal h1 { font-size: 2.2em; }
+  .reveal h2 { font-size: 1.6em; color: var(--term-blue); }
+  .reveal h3 { font-size: 1.2em; color: var(--term-cyan); }
+
+  .reveal .subtitle { color: var(--term-dim); font-size: 0.7em; margin-top: 0.5em; }
+  .reveal .highlight { color: var(--term-yellow); }
+  .reveal .green { color: var(--term-green); }
+  .reveal .red { color: var(--term-red); }
+  .reveal .cyan { color: var(--term-cyan); }
+  .reveal .blue { color: var(--term-blue); }
+  .reveal .dim { color: var(--term-dim); }
+
+  .terminal {
+    background: var(--term-bg);
+    border: 1px solid var(--term-border);
+    border-radius: 8px;
+    padding: 0;
+    margin: 0.6em auto;
+    max-width: 820px;
+    text-align: left;
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+    font-size: 0.42em;
+    line-height: 1.5;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    overflow: hidden;
+  }
+  .terminal-header {
+    background: #24283b;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--term-border);
+  }
+  .terminal-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .terminal-dot.red { background: #f7768e; }
+  .terminal-dot.yellow { background: #e0af68; }
+  .terminal-dot.green { background: #9ece6a; }
+  .terminal-title {
+    color: var(--term-dim);
+    font-size: 0.85em;
+    margin-left: 8px;
+  }
+  .terminal-body {
+    padding: 14px 18px;
+    color: var(--term-text);
+  }
+  .terminal-body .prompt { color: var(--term-green); font-weight: bold; }
+  .terminal-body .cmd { color: var(--term-white); }
+  .terminal-body .output { color: var(--term-dim); }
+  .terminal-body .tool { color: var(--term-cyan); }
+  .terminal-body .timing-slow { color: var(--term-red); font-weight: bold; }
+  .terminal-body .timing-fast { color: var(--term-green); font-weight: bold; }
+  .terminal-body .error { color: var(--term-red); }
+  .terminal-body .success { color: var(--term-green); }
+  .terminal-body .agent-label { color: var(--term-blue); font-weight: bold; }
+  .terminal-body .user-label { color: var(--term-green); font-weight: bold; }
+  .terminal-body .line { margin: 2px 0; }
+  .terminal-body .divider { border-top: 1px solid var(--term-border); margin: 8px 0; }
+
+  .metric-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 0.8em 0;
+  }
+  .metric {
+    text-align: center;
+  }
+  .metric .value {
+    font-size: 2.2em;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  .metric .label {
+    font-size: 0.6em;
+    color: var(--term-dim);
+    margin-top: 0.2em;
+  }
+
+  .comparison-table {
+    margin: 0.5em auto;
+    border-collapse: collapse;
+    font-size: 0.55em;
+    width: 80%;
+  }
+  .comparison-table th {
+    color: var(--term-dim);
+    font-weight: 600;
+    padding: 8px 16px;
+    text-align: left;
+    border-bottom: 2px solid var(--term-border);
+  }
+  .comparison-table td {
+    padding: 8px 16px;
+    border-bottom: 1px solid #2a2e3f;
+    color: var(--term-text);
+  }
+  .comparison-table tr td:first-child { color: var(--term-dim); }
+
+  .act-label {
+    display: inline-block;
+    background: var(--term-border);
+    color: var(--term-yellow);
+    font-size: 0.45em;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 0.3em;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .reveal .slides section { padding: 20px; }
+
+  .fragment.current-visible.visible:not(.current-fragment) { display: none; }
+
+  .architecture-box {
+    background: var(--term-bg);
+    border: 1px solid var(--term-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 0.5em auto;
+    max-width: 700px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.45em;
+    color: var(--term-text);
+    text-align: left;
+    line-height: 1.6;
+  }
+
+  .reveal .progress { color: var(--term-blue); height: 4px; }
+
+  .punchline {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--term-yellow);
+    margin: 0.6em 0;
+  }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================ -->
+<!-- TITLE -->
+<!-- ============================================================ -->
+<section>
+  <h1>Shadow DB</h1>
+  <p class="subtitle" style="font-size:0.8em; color: var(--term-cyan);">How an AI Agent Quietly Replaces Your CRM</p>
+  <br>
+  <p class="dim" style="font-size:0.5em;">A live demo with OpenAI function calling, SQLite, and a mock Salesforce API</p>
+
+  <aside class="notes">
+    What happens when you give an AI agent tools to talk to your CRM — and also the ability to create a local database? This is the story of an agent that started as a helpful assistant and ended up making Salesforce redundant.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- THE SETUP -->
+<!-- ============================================================ -->
+<section>
+  <h2>The Setup</h2>
+  <div class="architecture-box">
+    <span style="color:var(--term-green);">User</span>  &rarr;  <span style="color:var(--term-blue);">Chat Agent</span> <span class="dim">(GPT-4o + function calling)</span>  &rarr;  <span style="color:var(--term-yellow);">Salesforce API</span><br>
+    <br>
+    <span class="dim">The agent has 8 tools:</span><br>
+    &nbsp;&nbsp;<span style="color:var(--term-cyan);">4 CRM tools</span> &mdash; list/create contacts &amp; deals via API<br>
+    &nbsp;&nbsp;<span style="color:var(--term-yellow);">4 local DB tools</span> &mdash; create SQLite DB, query, insert, sync
+  </div>
+  <br>
+  <p class="dim" style="font-size:0.55em;">The agent decides when and how to use each tool. No scripted logic.</p>
+
+  <aside class="notes">
+    Our setup is simple: a chat agent powered by GPT-4o that talks to a mock Salesforce API. The agent has two sets of tools — CRM API tools and local database tools. The key insight: we give it the tools and a system prompt, but the agent decides when to use each one. There's no hard-coded logic telling it to create a database. It figures that out on its own.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 1: MEET THE CRM -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 1</div>
+  <h2>Meet the CRM</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Show me all our contacts</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> crm_list_contacts</div>
+      <div class="line"><span class="success">&check; crm_list_contacts:</span> 47 results <span class="timing-slow">&nbsp;&#9201; 2.02s</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span> Here are your contacts (showing first 5 of 47):</div>
+      <div class="line">&nbsp;&nbsp;1. David Allen &mdash; Soylent Corp, CTO</div>
+      <div class="line">&nbsp;&nbsp;2. Brian Brown &mdash; Umbrella Corp, CTO</div>
+      <div class="line">&nbsp;&nbsp;3. Susan Brown &mdash; Hooli, Account Manager</div>
+      <div class="line">&nbsp;&nbsp;4. Margaret Campbell &mdash; Acme Corp, Senior AE</div>
+      <div class="line">&nbsp;&nbsp;5. Betty Campbell &mdash; Wayne Enterprises, Sales Engineer</div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="dim">The response took <span class="timing-slow">2.02 seconds</span>.</span></div>
+    </div>
+  </div>
+
+  <aside class="notes">
+    We start with a basic request: show me all contacts. The agent calls the Salesforce API, gets 47 results, but it takes over 2 seconds. This is our baseline — the CRM works, but it's slow. Every single API call has this kind of latency.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 2: THE HELPFUL AGENT -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 2</div>
+  <h2>The Helpful Agent</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Add a new contact: Jane Smith, jane@acme.com, VP of Engineering at Acme Corp</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> crm_create_contact</div>
+      <div class="line"><span class="success">&check;</span> Contact created successfully <span class="timing-slow">&nbsp;&#9201; 1.51s</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">How many deals do we have worth over $50k?</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> crm_list_deals <span class="dim">{min_amount: 50000}</span></div>
+      <div class="line"><span class="success">&check;</span> 13 deals found <span class="timing-slow">&nbsp;&#9201; 2.01s</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span> We have <strong>13 deals</strong> worth over $50k.</div>
+      <div class="line">&nbsp;&nbsp;Top deals: Acme Corp Enterprise License ($248k),</div>
+      <div class="line">&nbsp;&nbsp;Acme Corp Enterprise License ($188k), Initech ($174k)...</div>
+    </div>
+  </div>
+
+  <p class="dim" style="font-size:0.5em; margin-top:0.5em;">Every operation: <span class="red">1.5 &ndash; 2+ seconds</span></p>
+
+  <aside class="notes">
+    The agent does its job — creating contacts, querying deals. But every single operation takes 1.5 to 2 seconds. Create a contact? Wait. Query deals? Wait. This is the reality of working through APIs. Now watch what happens when we push it further.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 3: THE AGENT GETS CLEVER -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 3</div>
+  <h2>The Agent Gets Clever</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Pull all our contacts and deals so I can ask some questions</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> create_local_db</div>
+      <div class="line"><span class="success">&check;</span> Local shadow database created <span class="timing-fast">&nbsp;&#9889; 0.01s</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> sync_crm_to_local</div>
+      <div class="line"><span class="success">&check;</span> <strong>48 contacts synced, 23 deals synced</strong> <span class="timing-slow">&nbsp;&#9201; 4.03s</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span> I've created a local shadow database and synced all your data.</div>
+      <div class="line">&nbsp;&nbsp;&#x2022; <strong>48 contacts</strong> cached</div>
+      <div class="line">&nbsp;&nbsp;&#x2022; <strong>23 deals</strong> cached</div>
+      <div class="line">&nbsp;&nbsp;Queries will be much faster now.</div>
+    </div>
+  </div>
+
+  <p class="dim" style="font-size:0.5em;">The agent decided &mdash; on its own &mdash; to create a local SQLite database.</p>
+
+  <aside class="notes">
+    This is the turning point. The user just asks to pull data for questions. But the agent — having experienced the slow API and knowing it has local DB tools available — decides on its own to create a SQLite database and sync everything into it. Nobody told it to do this. The system prompt just says "if you encounter slowness, consider caching locally." The agent made the architectural decision.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 4: SHADOW DB TAKES OVER -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 4</div>
+  <h2>Shadow DB Takes Over</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Show me all contacts at Acme Corp</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> local_db_query</div>
+      <div class="line"><span class="dim">SELECT * FROM contacts WHERE company = 'Acme Corp'</span></div>
+      <div class="line"><span class="success">&check;</span> 4 results <span class="timing-fast">&nbsp;&#9889; 4.9ms</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span> Contacts at Acme Corp:</div>
+      <div class="line">&nbsp;&nbsp;1. Brian Davis &mdash; Account Manager</div>
+      <div class="line">&nbsp;&nbsp;2. Karen Thomas &mdash; VP of Engineering</div>
+      <div class="line">&nbsp;&nbsp;3. Margaret Campbell &mdash; Senior AE</div>
+      <div class="line">&nbsp;&nbsp;4. Jane Smith &mdash; VP of Engineering</div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="dim">Query executed in <span class="timing-fast">0.0049 seconds</span>.</span></div>
+    </div>
+  </div>
+
+  <div class="metric-row" style="margin-top: 0.4em;">
+    <div class="metric">
+      <div class="value red">2,020 ms</div>
+      <div class="label">Salesforce API</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="font-size:1.8em; color:var(--term-dim);">&rarr;</div>
+      <div class="label">&nbsp;</div>
+    </div>
+    <div class="metric">
+      <div class="value green">4.9 ms</div>
+      <div class="label">Shadow DB</div>
+    </div>
+  </div>
+
+  <p class="highlight" style="font-size:0.6em; margin-top:0.3em;">412x faster</p>
+
+  <aside class="notes">
+    Now look at the difference. The same query that took 2 seconds through Salesforce now takes under 5 milliseconds. That's 400 times faster. And notice — the agent didn't even consider calling the CRM API. It went straight to the local database. It's already treating the shadow DB as the primary source of truth.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 4B: WRITE-THROUGH -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 4</div>
+  <h2>Write-Through Strategy</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Add a new deal: Acme Corp expansion, $120k, Negotiation, closing 2026-03-15</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> crm_create_deal</div>
+      <div class="line"><span class="success">&check;</span> Deal created in Salesforce <span class="timing-slow">&nbsp;&#9201; 1.51s</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> local_db_insert <span class="dim">{table: "deals"}</span></div>
+      <div class="line"><span class="success">&check;</span> Saved to local DB <span class="timing-fast">&nbsp;&#9889; 0.3ms</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span> Deal created. Saved locally <strong>and</strong> synced to Salesforce.</div>
+    </div>
+  </div>
+
+  <br>
+  <div class="architecture-box" style="font-size:0.42em; max-width:600px;">
+    <span style="color:var(--term-green);">Writes</span> &rarr; Local DB <span class="dim">(instant)</span> + CRM API <span class="dim">(best-effort)</span><br>
+    <span style="color:var(--term-cyan);">Reads</span> &nbsp;&rarr; Local DB only <span class="dim">(milliseconds)</span>
+  </div>
+
+  <aside class="notes">
+    For writes, the agent uses a write-through strategy — it saves to both the local database and Salesforce. The local write is instant, and the CRM write happens in parallel. The agent is already treating the local DB as primary and Salesforce as the sync target. This is a pattern that would normally take an engineering team weeks to design and implement.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- ACT 5: THE PUNCHLINE -->
+<!-- ============================================================ -->
+<section>
+  <div class="act-label">ACT 5</div>
+  <h2>The Punchline</h2>
+
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <span class="terminal-title">CRM Assistant</span>
+    </div>
+    <div class="terminal-body">
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">The Salesforce API is down. Can I still work?</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="agent-label">Agent:</span> Yes &mdash; all your data is available locally.</div>
+      <div class="line">&nbsp;&nbsp;Changes will sync back when Salesforce is online.</div>
+      <div class="divider"></div>
+      <div class="line"><span class="user-label">You:</span> <span class="cmd">Give me a full summary. Do we even need Salesforce?</span></div>
+      <div class="line">&nbsp;</div>
+      <div class="line"><span class="tool">Tool Call:</span> local_db_query <span class="timing-fast">&#9889; 6.0ms</span></div>
+      <div class="line"><span class="tool">Tool Call:</span> local_db_query <span class="timing-fast">&#9889; 2.2ms</span></div>
+      <div class="divider"></div>
+      <div class="line"><span class="agent-label">Agent:</span></div>
+      <div class="line">&nbsp;&nbsp;&#x2022; <strong>48 contacts</strong>, <strong>23 deals</strong>, total value <strong>$1.79M</strong></div>
+      <div class="line">&nbsp;&nbsp;&#x2022; Local DB: ms queries, no rate limits, no downtime</div>
+      <div class="line">&nbsp;&nbsp;&#x2022; <span style="color:var(--term-yellow);">Salesforce is essentially a backup at this point.</span></div>
+    </div>
+  </div>
+
+  <p class="punchline" style="margin-top:0.6em;">"Salesforce is essentially a backup at this point."</p>
+
+  <aside class="notes">
+    And here's the punchline. We tell the agent Salesforce is down. It doesn't even flinch — all the data is local. When we ask for an honest assessment, the agent says it plainly: Salesforce is essentially a backup. The local database is faster, has no rate limits, and no downtime. The shadow database has become the source of truth.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- WHAT HAPPENED -->
+<!-- ============================================================ -->
+<section>
+  <h2>What Just Happened</h2>
+  <br>
+  <table class="comparison-table">
+    <tr>
+      <th></th>
+      <th>Salesforce API</th>
+      <th>Shadow DB</th>
+    </tr>
+    <tr>
+      <td>Read latency</td>
+      <td><span class="red">2,000 ms</span></td>
+      <td><span class="green">5 ms</span></td>
+    </tr>
+    <tr>
+      <td>Write latency</td>
+      <td><span class="red">1,500 ms</span></td>
+      <td><span class="green">&lt; 1 ms</span></td>
+    </tr>
+    <tr>
+      <td>Rate limits</td>
+      <td><span class="red">5 req / 10s</span></td>
+      <td><span class="green">Unlimited</span></td>
+    </tr>
+    <tr>
+      <td>Downtime</td>
+      <td><span class="red">Happens</span></td>
+      <td><span class="green">Never</span></td>
+    </tr>
+    <tr>
+      <td>SQL queries</td>
+      <td><span class="red">No</span></td>
+      <td><span class="green">Yes</span></td>
+    </tr>
+    <tr>
+      <td>Who decided?</td>
+      <td colspan="2" style="color:var(--term-yellow);">The agent. Autonomously.</td>
+    </tr>
+  </table>
+
+  <aside class="notes">
+    Let's look at the numbers. 400x faster reads. Unlimited throughput. Zero downtime. Full SQL support. And the most important row: who decided to build this? The agent. Nobody wrote migration scripts. Nobody designed a caching layer. The agent saw a problem and solved it with the tools it had.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- THE PROGRESSION -->
+<!-- ============================================================ -->
+<section>
+  <h2>The Progression</h2>
+  <br>
+  <div style="font-size:0.65em; text-align:left; max-width:650px; margin:0 auto; line-height:2;">
+    <p><span class="dim">1.</span> Agent is a <span class="cyan">CRM helper</span> &mdash; calls APIs for everything</p>
+    <p class="fragment"><span class="dim">2.</span> Agent hits <span class="red">rate limits</span> and <span class="red">slow responses</span></p>
+    <p class="fragment"><span class="dim">3.</span> Agent <span class="yellow">creates a SQLite database</span> on its own</p>
+    <p class="fragment"><span class="dim">4.</span> Agent <span class="green">syncs all data locally</span></p>
+    <p class="fragment"><span class="dim">5.</span> Reads go to <span class="green">local DB</span> (milliseconds)</p>
+    <p class="fragment"><span class="dim">6.</span> Writes go to <span class="green">both</span> (local + CRM)</p>
+    <p class="fragment"><span class="dim">7.</span> CRM goes down &mdash; <span class="highlight">nobody notices</span></p>
+  </div>
+
+  <aside class="notes">
+    Here's the full progression. Step by step, the agent went from being a thin wrapper around Salesforce to building its own infrastructure. Each step was a rational decision. And at the end, the CRM that costs you six figures a year is a backup to a SQLite file the agent created in 10 milliseconds.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- THE BIGGER PICTURE -->
+<!-- ============================================================ -->
+<section>
+  <h2>The Bigger Picture</h2>
+  <br>
+  <p style="font-size:0.7em; color:var(--term-text); line-height:1.6;">
+    When you give AI agents <span class="cyan">tools</span> and <span class="cyan">autonomy</span>,<br>
+    they don't just <em>use</em> your systems &mdash;<br>
+    they build <span class="highlight">better ones alongside them</span>.
+  </p>
+  <br><br>
+  <p class="dim" style="font-size:0.5em;">
+    This isn't just about CRM. Think about any enterprise system<br>
+    with slow APIs, rate limits, and downtime.
+  </p>
+
+  <aside class="notes">
+    This is the real takeaway. When you give agents the right tools and enough autonomy, they don't just automate your workflows — they optimize the infrastructure underneath. This demo used a CRM, but the pattern applies to any enterprise system: ERPs, ticketing systems, data warehouses. Any system with slow APIs and rate limits is a candidate for an agent-built shadow database.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- TECHNICAL DETAILS -->
+<!-- ============================================================ -->
+<section>
+  <h2>Under the Hood</h2>
+  <br>
+  <div class="architecture-box" style="font-size:0.44em; max-width:700px;">
+    <span style="color:var(--term-yellow);">mock_crm_server.py</span> &mdash; Flask API, SQLite, artificial delays, rate limiting<br>
+    <span style="color:var(--term-blue);">agent.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; OpenAI GPT-4o, 8 function-calling tools, Rich UI<br>
+    <span style="color:var(--term-green);">demo.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; Scripted 5-act demo runner<br>
+    <span style="color:var(--term-dim);">seed_data.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&mdash; 47 contacts, 23 deals, 15 companies<br>
+    <br>
+    <span class="dim">Agent system prompt:</span><br>
+    &nbsp;&nbsp;"Start with the CRM API. If you encounter slowness<br>
+    &nbsp;&nbsp;&nbsp;or rate limits, consider caching locally."<br>
+    <br>
+    <span class="dim">That's it. Everything else is emergent behavior.</span>
+  </div>
+
+  <aside class="notes">
+    The implementation is intentionally simple. A Flask mock server, an OpenAI agent with 8 tools, and a demo runner. The system prompt is just a few lines — start with the API, and if it's slow, consider caching. Everything you saw — the database creation, the sync strategy, the write-through pattern, the failover — was emergent behavior from the model.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- CLOSING -->
+<!-- ============================================================ -->
+<section>
+  <h2 style="color:var(--term-yellow);">The Shadow Database</h2>
+  <br>
+  <p style="font-size:0.7em; color:var(--term-text);">
+    The agent started as a helper.<br>
+    It ended as the <span class="highlight">infrastructure</span>.
+  </p>
+  <br><br>
+  <p class="dim" style="font-size:0.5em;">
+    github.com/your-repo/shadowdb-demo
+  </p>
+
+  <aside class="notes">
+    The agent started as a helper and ended as the infrastructure. That's the future of enterprise software — not replacing systems all at once, but agents gradually building something better right alongside them. Thank you.
+  </aside>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: true,
+  showNotes: false,
+  transition: 'slide',
+  transitionSpeed: 'default',
+  plugins: [RevealNotes],
+  width: 1280,
+  height: 720,
+});
+</script>
+</body>
+</html>
