@@ -203,6 +203,60 @@
 </section>
 
 <!-- ============================================================ -->
+<!-- IMPORTANT: THIS IS NOT SCRIPTED -->
+<!-- ============================================================ -->
+<section>
+  <h2>Before We Start</h2>
+  <p style="font-size:0.7em; color:var(--term-yellow); margin-bottom:0.6em;">This is not a canned demo.</p>
+
+  <div style="font-size:0.6em; text-align:left; max-width:700px; margin:0 auto; line-height:2.2;">
+    <p><span class="green">Scripted:</span> &nbsp;The user's messages (typed in sequence by a demo runner)</p>
+    <p><span class="green">Scripted:</span> &nbsp;The API conditions (we trigger rate limits + downtime at key moments)</p>
+    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The agent's responses</p>
+    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;Which tools the agent calls</p>
+    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The decision to create a local database</p>
+    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The SQL queries it writes</p>
+    <p class="fragment"><span class="yellow">NOT scripted:</span> &nbsp;The write-through strategy</p>
+  </div>
+
+  <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">Every agent action you're about to see is a real GPT-4o function-calling decision.</p>
+
+  <aside class="notes">
+    Before we dive in, I want to be clear about what's real and what's staged. We script the user's questions — they're fed in automatically so the demo is reproducible. And we control the API conditions — we deliberately trigger rate limits and downtime at key moments. But everything the agent does is real. The responses, the tool choices, the decision to create a database, the SQL it writes — all of that is live GPT-4o inference. Nothing is hard-coded.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
+<!-- HOW IT WORKS -->
+<!-- ============================================================ -->
+<section>
+  <h2>How We Nudge, Not Script</h2>
+
+  <div style="font-size:0.55em; text-align:left; max-width:750px; margin:0.5em auto; line-height:1.8;">
+    <p style="margin-bottom:0.6em;"><span class="cyan">1. Tool availability</span></p>
+    <p class="dim" style="margin-left:1.5em; margin-bottom:0.8em;">
+      The agent has <code style="color:var(--term-yellow);">create_local_db</code> and <code style="color:var(--term-yellow);">local_db_query</code> in its toolbox.<br>
+      LLMs are biased toward using tools that exist. Just having them is a signal.
+    </p>
+    <p style="margin-bottom:0.6em;"><span class="cyan">2. Gentle system prompt</span></p>
+    <div class="architecture-box" style="font-size:0.85em; max-width:650px; margin:0.3em auto 0.8em 1.5em; padding:10px 14px;">
+      "If you encounter slowness or rate limits, <span style="color:var(--term-yellow);">consider</span> caching locally."
+    </div>
+    <p style="margin-bottom:0.6em;"><span class="cyan">3. Environmental pressure</span></p>
+    <p class="dim" style="margin-left:1.5em;">
+      We make the API painful: <span class="red">2s latency</span> on every call, then <span class="red">429 rate limits</span>.<br>
+      The agent connects the dots on its own.
+    </p>
+  </div>
+
+  <p class="highlight" style="font-size:0.55em; margin-top:0.5em;">We set the conditions. The agent makes the decision.</p>
+
+  <aside class="notes">
+    So how does it work? Three things. First, tool availability — just having create_local_db and local_db_query in the function definitions signals to the model that these exist for a reason. LLMs are strongly biased toward using tools available to them. Second, a gentle system prompt — not "create a database," just "consider caching locally if things are slow." Third, environmental pressure — we make the API genuinely painful with 2-second delays and rate limits. The agent experiences the pain and reaches for the solution. We set the conditions; it makes the architectural decision.
+  </aside>
+</section>
+
+<!-- ============================================================ -->
 <!-- ACT 1: MEET THE CRM -->
 <!-- ============================================================ -->
 <section>
