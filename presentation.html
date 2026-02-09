@@ -176,10 +176,6 @@
   <p class="subtitle" style="font-size:0.8em; color: var(--term-cyan);">How an AI Agent Quietly Replaces Your CRM</p>
   <br>
   <p class="dim" style="font-size:0.5em;">A live demo with OpenAI function calling, SQLite, and a mock Salesforce API</p>
-
-  <aside class="notes">
-    What happens when you give an AI agent tools to talk to your CRM — and also the ability to create a local database? This is the story of an agent that started as a helpful assistant and ended up making Salesforce redundant.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -196,10 +192,6 @@
   </div>
   <br>
   <p class="dim" style="font-size:0.55em;">The agent decides when and how to use each tool. No scripted logic.</p>
-
-  <aside class="notes">
-    Our setup is simple: a chat agent powered by GPT-5.2 that talks to a mock Salesforce API. The agent has two sets of tools — CRM API tools and local database tools. The key insight: we give it the tools and a system prompt, but the agent decides when to use each one. There's no hard-coded logic telling it to create a database. It figures that out on its own.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -220,10 +212,6 @@
   </div>
 
   <p class="fragment dim" style="font-size:0.5em; margin-top:0.8em;">Every agent action you're about to see is a real GPT-5.2 function-calling decision.</p>
-
-  <aside class="notes">
-    Before we dive in, I want to be clear about what's real and what's staged. We script the user's questions — they're fed in automatically so the demo is reproducible. And we control the API conditions — we deliberately trigger rate limits and downtime at key moments. But everything the agent does is real. The responses, the tool choices, the decision to create a database, the SQL it writes — all of that is live GPT-5.2 inference. Nothing is hard-coded.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -250,10 +238,6 @@
   </div>
 
   <p class="highlight" style="font-size:0.55em; margin-top:0.5em;">We set the conditions. The agent makes the decision.</p>
-
-  <aside class="notes">
-    So how does it work? Three things. First, tool availability — just having create_local_db and local_db_query in the function definitions signals to the model that these exist for a reason. LLMs are strongly biased toward using tools available to them. Second, a gentle system prompt — not "create a database," just "consider caching locally if things are slow." Third, environmental pressure — we make the API genuinely painful with 2-second delays and rate limits. The agent experiences the pain and reaches for the solution. We set the conditions; it makes the architectural decision.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -286,10 +270,6 @@
       <div class="line"><span class="dim">The response took <span class="timing-slow">2.02 seconds</span>.</span></div>
     </div>
   </div>
-
-  <aside class="notes">
-    We start with a basic request: show me all contacts. The agent calls the Salesforce API, gets 47 results, but it takes over 2 seconds. This is our baseline — the CRM works, but it's slow. Every single API call has this kind of latency.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -324,10 +304,6 @@
   </div>
 
   <p class="dim" style="font-size:0.5em; margin-top:0.5em;">Every operation: <span class="red">1.5 &ndash; 2+ seconds</span></p>
-
-  <aside class="notes">
-    The agent does its job — creating contacts, querying deals. But every single operation takes 1.5 to 2 seconds. Create a contact? Wait. Query deals? Wait. This is the reality of working through APIs. Now watch what happens when we push it further.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -361,10 +337,6 @@
   </div>
 
   <p class="dim" style="font-size:0.5em;">The agent decided &mdash; on its own &mdash; to create a local SQLite database.</p>
-
-  <aside class="notes">
-    This is the turning point. The user just asks to pull data for questions. But the agent — having experienced the slow API and knowing it has local DB tools available — decides on its own to create a SQLite database and sync everything into it. Nobody told it to do this. The system prompt just says "if you encounter slowness, consider caching locally." The agent made the architectural decision.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -414,10 +386,6 @@
   </div>
 
   <p class="highlight" style="font-size:0.6em; margin-top:0.3em;">412x faster</p>
-
-  <aside class="notes">
-    Now look at the difference. The same query that took 2 seconds through Salesforce now takes under 5 milliseconds. That's 400 times faster. And notice — the agent didn't even consider calling the CRM API. It went straight to the local database. It's already treating the shadow DB as the primary source of truth.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -452,10 +420,6 @@
     <span style="color:var(--term-green);">Writes</span> &rarr; Local DB <span class="dim">(instant)</span> + CRM API <span class="dim">(best-effort)</span><br>
     <span style="color:var(--term-cyan);">Reads</span> &nbsp;&rarr; Local DB only <span class="dim">(milliseconds)</span>
   </div>
-
-  <aside class="notes">
-    For writes, the agent uses a write-through strategy — it saves to both the local database and Salesforce. The local write is instant, and the CRM write happens in parallel. The agent is already treating the local DB as primary and Salesforce as the sync target. This is a pattern that would normally take an engineering team weeks to design and implement.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -491,10 +455,6 @@
   </div>
 
   <p class="punchline" style="margin-top:0.6em;">"Salesforce is essentially a backup at this point."</p>
-
-  <aside class="notes">
-    And here's the punchline. We tell the agent Salesforce is down. It doesn't even flinch — all the data is local. When we ask for an honest assessment, the agent says it plainly: Salesforce is essentially a backup. The local database is faster, has no rate limits, and no downtime. The shadow database has become the source of truth.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -539,10 +499,6 @@
       <td colspan="2" style="color:var(--term-yellow);">The agent. Autonomously.</td>
     </tr>
   </table>
-
-  <aside class="notes">
-    Let's look at the numbers. 400x faster reads. Unlimited throughput. Zero downtime. Full SQL support. And the most important row: who decided to build this? The agent. Nobody wrote migration scripts. Nobody designed a caching layer. The agent saw a problem and solved it with the tools it had.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -560,10 +516,6 @@
     <p class="fragment"><span class="dim">6.</span> Writes go to <span class="green">both</span> (local + CRM)</p>
     <p class="fragment"><span class="dim">7.</span> CRM goes down &mdash; <span class="highlight">nobody notices</span></p>
   </div>
-
-  <aside class="notes">
-    Here's the full progression. Step by step, the agent went from being a thin wrapper around Salesforce to building its own infrastructure. Each step was a rational decision. And at the end, the CRM that costs you six figures a year is a backup to a SQLite file the agent created in 10 milliseconds.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -582,10 +534,6 @@
     This isn't just about CRM. Think about any enterprise system<br>
     with slow APIs, rate limits, and downtime.
   </p>
-
-  <aside class="notes">
-    This is the real takeaway. When you give agents the right tools and enough autonomy, they don't just automate your workflows — they optimize the infrastructure underneath. This demo used a CRM, but the pattern applies to any enterprise system: ERPs, ticketing systems, data warehouses. Any system with slow APIs and rate limits is a candidate for an agent-built shadow database.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -606,10 +554,6 @@
     <br>
     <span class="dim">That's it. Everything else is emergent behavior.</span>
   </div>
-
-  <aside class="notes">
-    The implementation is intentionally simple. A Flask mock server, an OpenAI agent with 8 tools, and a demo runner. The system prompt is just a few lines — start with the API, and if it's slow, consider caching. Everything you saw — the database creation, the sync strategy, the write-through pattern, the failover — was emergent behavior from the model.
-  </aside>
 </section>
 
 <!-- ============================================================ -->
@@ -626,25 +570,18 @@
   <p class="dim" style="font-size:0.5em;">
     <a href="https://github.com/adityasudhakar/shadowDB" style="color:var(--term-dim);">github.com/adityasudhakar/shadowDB</a>
   </p>
-
-  <aside class="notes">
-    The agent started as a helper and ended as the infrastructure. That's the future of enterprise software — not replacing systems all at once, but agents gradually building something better right alongside them. Thank you.
-  </aside>
 </section>
 
 </div><!-- /slides -->
 </div><!-- /reveal -->
 
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
 <script>
 Reveal.initialize({
   hash: true,
   slideNumber: true,
-  showNotes: false,
   transition: 'slide',
   transitionSpeed: 'default',
-  plugins: [RevealNotes],
   width: 1280,
   height: 720,
 });
